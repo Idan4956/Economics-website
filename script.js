@@ -133,3 +133,4 @@ metricSelector.addEventListener("change", (e) => {
 });
 
 renderChart("rentToIncome");
+ 
