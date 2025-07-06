@@ -1,136 +1,92 @@
-const metrics = {
-  rentToIncome: {
-    title: "🏠 Median Rent-to-Income Ratio",
-    description: "Annual rent as a percentage of median income by province.",
-    unit: "%",
-    color: "#1a73e8",
-    calculate: (entry) => ((entry.medianRent * 12) / entry.medianIncome * 100).toFixed(1),
-  },
-  gasAffordability: {
-    title: "⛽ Gas Affordability (L/hour)",
-    description: "How many liters of gas you can buy with 1 hour of minimum wage.",
-    unit: "L",
-    color: "#e91e63",
-    calculate: (entry) => (entry.minWage / entry.gasPrice).toFixed(1),
-  },
-  groceryIndex: {
-    title: "🛒 Grocery Cost Index",
-    description: "Relative cost of a basic grocery basket (milk, eggs, bread, etc.).",
-    unit: "pts",
-    color: "#ff9800",
-    calculate: (entry) => entry.groceryIndex,
-  },
-  taxBurden: {
-    title: "📊 Tax Burden",
-    description: "Total estimated taxes as % of income (income + sales + property).",
-    unit: "%",
-    color: "#4caf50",
-    calculate: (entry) => entry.taxBurden,
-  },
-  educationSpending: {
-    title: "🎓 Education Spending per Student",
-    description: "Average public spending on education per student.",
-    unit: "$",
-    color: "#9c27b0",
-    calculate: (entry) => entry.educationSpending,
-  }
+const data = {
+  ON: { province: "Ontario", medianRent:1900, medianIncome:65000, minWage:16.55, gasPrice:1.67, groceryIndex:102, taxBurden:34, educationSpending:13000 },
+  QC: { province: "Quebec", medianRent:1400, medianIncome:55000, minWage:15.25, gasPrice:1.55, groceryIndex:95, taxBurden:37, educationSpending:12500 },
+  AB: { province: "Alberta", medianRent:1500, medianIncome:72000, minWage:15.00, gasPrice:1.45, groceryIndex:101, taxBurden:29, educationSpending:13200 },
+  BC: { province: "British Columbia", medianRent:2200, medianIncome:60000, minWage:17.40, gasPrice:1.90, groceryIndex:109, taxBurden:35, educationSpending:12000 },
+  NS: { province: "Nova Scotia", medianRent:1300, medianIncome:48000, minWage:15.20, gasPrice:1.60, groceryIndex:100, taxBurden:33, educationSpending:11800 },
+  NB: { province: "New Brunswick", medianRent:1200, medianIncome:50000, minWage:15.00, gasPrice:1.65, groceryIndex:98, taxBurden:32, educationSpending:11500 },
+  MB: { province: "Manitoba", medianRent:1100, medianIncome:54000, minWage:15.00, gasPrice:1.60, groceryIndex:99, taxBurden:30, educationSpending:12500 },
+  SK: { province: "Saskatchewan", medianRent:1100, medianIncome:56000, minWage:15.00, gasPrice:1.58, groceryIndex:100, taxBurden:31, educationSpending:12200 },
+  NL: { province: "Newfoundland and Labrador", medianRent:1000, medianIncome:52000, minWage:15.00, gasPrice:1.75, groceryIndex:97, taxBurden:36, educationSpending:11900 },
+  PE: { province: "Prince Edward Island", medianRent: 950, medianIncome:50000, minWage:15.00, gasPrice:1.70, groceryIndex:96, taxBurden:32, educationSpending:11700 },
+  YT: { province: "Yukon", medianRent:1400, medianIncome:65000, minWage:15.70, gasPrice:1.85, groceryIndex:110, taxBurden:33, educationSpending:13000 },
+  NT: { province: "Northwest Territories", medianRent:1600, medianIncome:85000, minWage:15.70, gasPrice:1.95, groceryIndex:115, taxBurden:30, educationSpending:14000 },
+  NU: { province: "Nunavut", medianRent:1800, medianIncome:105000, minWage:15.70, gasPrice:2.05, groceryIndex:130, taxBurden:29, educationSpending:15000 }
 };
 
-const data = [
-  {
-    province: "Ontario",
-    medianRent: 1900,
-    medianIncome: 65000,
-    minWage: 16.55,
-    gasPrice: 1.67,
-    groceryIndex: 102,
-    taxBurden: 34,
-    educationSpending: 13000
+const metrics = {
+  rentToIncome: {
+    label: "Rent-to-Income (%)",
+    calc: (d) => (d.medianRent * 12 / d.medianIncome * 100),
+    unit: "%",
   },
-  {
-    province: "Quebec",
-    medianRent: 1400,
-    medianIncome: 55000,
-    minWage: 15.25,
-    gasPrice: 1.55,
-    groceryIndex: 95,
-    taxBurden: 37,
-    educationSpending: 12500
+  gasAffordability: {
+    label: "Gas Affordability (L/hour)",
+    calc: (d) => (d.minWage / d.gasPrice),
+    unit: "L",
   },
-  {
-    province: "Alberta",
-    medianRent: 1500,
-    medianIncome: 72000,
-    minWage: 15.00,
-    gasPrice: 1.45,
-    groceryIndex: 101,
-    taxBurden: 29,
-    educationSpending: 13200
+  groceryIndex: {
+    label: "Grocery Cost (index)",
+    calc: (d) => d.groceryIndex,
+    unit: "",
   },
-  {
-    province: "British Columbia",
-    medianRent: 2200,
-    medianIncome: 60000,
-    minWage: 17.40,
-    gasPrice: 1.90,
-    groceryIndex: 109,
-    taxBurden: 35,
-    educationSpending: 12000
+  taxBurden: {
+    label: "Tax Burden (%)",
+    calc: (d) => d.taxBurden,
+    unit: "%",
   },
-  {
-    province: "Nova Scotia",
-    medianRent: 1300,
-    medianIncome: 48000,
-    minWage: 15.20,
-    gasPrice: 1.60,
-    groceryIndex: 100,
-    taxBurden: 33,
-    educationSpending: 11800
-  }
-];
+  educationSpending: {
+    label: "Education Spending ($)",
+    calc: (d) => d.educationSpending,
+    unit: "$",
+  },
+};
 
-const chart = document.getElementById("chart");
-const metricSelector = document.getElementById("metric");
-const metricDesc = document.getElementById("metric-desc");
+const svg = document.getElementById("canada-map");
+const tooltip = document.getElementById("tooltip");
+const legend = document.getElementById("legend");
+const selector = document.getElementById("metric");
 
-function renderChart(metricKey) {
+function updateMap() {
+  const metricKey = selector.value;
   const metric = metrics[metricKey];
-  chart.innerHTML = "";
-  metricDesc.textContent = metric.description;
-
-  const values = data.map(entry => parseFloat(metric.calculate(entry)));
+  const values = Object.values(data).map(d => metric.calc(d));
+  const min = Math.min(...values);
   const max = Math.max(...values);
 
-  data.forEach(entry => {
-    const value = metric.calculate(entry);
-    const percent = (value / max) * 100;
-
-    const bar = document.createElement("div");
-    bar.className = "bar";
-
-    const label = document.createElement("div");
-    label.className = "bar-label";
-    label.textContent = entry.province;
-
-    const barBg = document.createElement("div");
-    barBg.className = "bar-bg";
-
-    const barFill = document.createElement("div");
-    barFill.className = "bar-fill";
-    barFill.style.width = `${percent}%`;
-    barFill.style.background = metric.color;
-    barFill.textContent = `${value}${metric.unit}`;
-
-    barBg.appendChild(barFill);
-    bar.appendChild(label);
-    bar.appendChild(barBg);
-    chart.appendChild(bar);
+  Object.keys(data).forEach(id => {
+    const val = metric.calc(data[id]);
+    const norm = (val - min) / (max - min);
+    const color = `hsl(${120 - norm * 120}, 70%, 60%)`;
+    const path = document.getElementById(id);
+    if(path) {
+      path.style.fill = color;
+      path.onmousemove = (e) => {
+        const pct = ((e.offsetX / svg.clientWidth)*100).toFixed(1);
+        tooltip.style.left = `${e.pageX + 10}px`;
+        tooltip.style.top = `${e.pageY + 10}px`;
+        tooltip.innerHTML = `<strong>${data[id].province}</strong><br>${metric.label}: ${metric.calc(data[id]).toFixed(2)}${metric.unit}`;
+        tooltip.style.opacity = 1;
+      };
+      path.onmouseout = () => { tooltip.style.opacity = 0; };
+    }
   });
+
+  // Legend
+  legend.innerHTML = "";
+  const steps = 5;
+  for(let i = 0; i <= steps; i++){
+    const val = min + (max - min) * (i / steps);
+    const color = `hsl(${120 - (i/steps)*120}, 70%, 60%)`;
+    const box = document.createElement("div");
+    box.className = "legend-item";
+    box.innerHTML = `<div class="legend-color" style="background:${color}"></div>${val.toFixed(1)}${metric.unit}`;
+    legend.appendChild(box);
+  }
 }
 
-metricSelector.addEventListener("change", (e) => {
-  renderChart(e.target.value);
-});
+selector.addEventListener("change", updateMap);
+window.addEventListener("resize", updateMap);
 
-renderChart("rentToIncome");
- 
+// Initial
+updateMap();

@@ -3,31 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Economic Insight Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Economic Insight Map – Canada</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <header>
-  <h1>Economic Insight Dashboard</h1>
-  <p>Infographics for uncommon but important numbers</p>
+  <h1>Canadian Economic Choropleth Map</h1>
 </header>
 
-<div class="container">
-  <div class="selector">
-    <label for="metric">Select Metric:</label>
-    <select id="metric">
-      <option value="rentToIncome">🏠 Rent-to-Income Ratio</option>
-      <option value="gasAffordability">⛽ Gas Affordability</option>
-      <option value="groceryIndex">🛒 Grocery Cost Index</option>
-      <option value="taxBurden">📊 Tax Burden %</option>
-      <option value="educationSpending">🎓 Education Spending per Student</option>
-    </select>
-    <p class="metric-desc" id="metric-desc"></p>
-  </div>
-
-  <div class="chart" id="chart"></div>
+<div class="controls">
+  <label for="metric">Select Metric:</label>
+  <select id="metric">
+    <option value="rentToIncome">🏠 Rent-to-Income Ratio</option>
+    <option value="gasAffordability">⛽ Gas Affordability (L/hour)</option>
+    <option value="groceryIndex">🛒 Grocery Cost Index</option>
+    <option value="taxBurden">📊 Tax Burden %</option>
+    <option value="educationSpending">🎓 Education Spending per Student</option>
+  </select>
 </div>
+
+<div class="map-container">
+  <!-- Tooltip -->
+  <div id="tooltip" class="tooltip" style="opacity:0"></div>
+
+  <!-- SVG map -->
+  <svg id="canada-map" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
+    <!-- [SVG paths for provinces/territories with appropriate IDs like QC, ON, etc.] -->
+    <!-- Example: -->
+    <path id="ON" class="province" d="M...Z"></path>
+    <!-- [Include remaining provinces and territories here] -->
+  </svg>
+</div>
+
+<div class="legend" id="legend"></div>
 
 <script src="script.js"></script>
 </body>
